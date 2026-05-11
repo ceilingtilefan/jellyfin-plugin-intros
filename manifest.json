@@ -12,7 +12,7 @@
                 "changelog": "- Add user picker",
                 "targetAbi": "10.11.0.0",
                 "sourceUrl": "https://github.com/ceilingtilefan/jellyfin-plugin-intros/releases/download/v4.0.0.1/local-intros-modified_4.0.0.1.zip",
-                "checksum": "fef8993a46c03d3b77c200750b780058",
+                "checksum": "c21bba2b15fff30b773048a00a186039",
                 "timestamp": "2026-05-11T17:00:00Z"
             }
         ]
