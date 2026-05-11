@@ -11,8 +11,8 @@
                 "version": "4.0.0.1",
                 "changelog": "- Add user picker",
                 "targetAbi": "10.11.0.0",
-                "sourceUrl": "https://github.com/ceilingtilefan/jellyfin-plugin-intros/releases/download/v4.0.0.1/local-intros_4.0.0.1.zip",
-                "checksum": "cba6080c28ac50220d4241bd721911d6",
+                "sourceUrl": "https://github.com/ceilingtilefan/jellyfin-plugin-intros/releases/download/v4.0.0.1/local-intros-modified_4.0.0.1.zip",
+                "checksum": "16de88ee21f3fb9afa31b0071ab5c482",
                 "timestamp": "2026-05-11T17:00:00Z"
             }
         ]
