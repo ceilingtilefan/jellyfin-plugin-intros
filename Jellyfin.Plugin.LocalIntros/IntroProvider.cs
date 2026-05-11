@@ -30,6 +30,12 @@ public class IntroProvider : IIntroProvider
     {
         try
         {
+            var enabledUsers = LocalIntrosPlugin.Instance.Configuration.EnabledUsers;
+            if (user == null || !enabledUsers.Contains(user.Id))
+            {
+                logger.LogTrace("User {UserId} is not in the enabled users list, skipping intros.", user?.Id);
+                return Task.FromResult(Enumerable.Empty<IntroInfo>());
+            }
 
             if (LocalIntrosPlugin.Instance.Configuration.Local != string.Empty)
             {

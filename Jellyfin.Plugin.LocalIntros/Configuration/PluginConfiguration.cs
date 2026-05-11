@@ -19,6 +19,13 @@ public class IntroPluginConfiguration : BasePluginConfiguration
     public List<DateRangeIntro> PremiereDateIntros { get; set; } = new List<DateRangeIntro>();
 
     public bool IntrosForMoviesOnly { get; set; } = false;
+
+    /// <summary>
+    /// Users for whom intros should play. Strict opt-in: a user is only eligible
+    /// for intros if their ID appears in this list. An empty list means no user
+    /// gets intros.
+    /// </summary>
+    public List<Guid> EnabledUsers { get; set; } = new List<Guid>();
 }
 
 public class IntroVideo

@@ -33,6 +33,11 @@
 
                     </div>
                     <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused">Users</label>
+                        <div class="fieldDescription">Select which users should see intros. Unchecked users (and any user not listed) will never see intros.</div>
+                        <div id="userSelectionList" style="margin-top: 0.5em;"></div>
+                    </div>
+                    <div class="inputContainer">
                         <label class="inputLabel inputLabelUnfocused" for="ruleSelection">Rule Type</label>
                         <select id="ruleSelection" is="emby-select">
                             <option value="default">Default</option>
@@ -162,10 +167,46 @@
                     Local: "",
                     DetectedLocalVideos: [],
                     DefaultLocalVideos: [],
-                    TagIntros: [], 
+                    TagIntros: [],
                     GenreIntros: [],
                     StudioIntros: [],
-                    IntrosForMoviesOnly: false
+                    IntrosForMoviesOnly: false,
+                    EnabledUsers: []
+                };
+
+                var renderUserSelection = (users) => {
+                    var enabled = new Set((localIntroConfig.EnabledUsers || []).map(id => String(id).toLowerCase()));
+                    var container = $('#userSelectionList');
+                    container.empty();
+                    if (!users || users.length === 0) {
+                        container.append($('<div>').addClass('fieldDescription').text('No users found.'));
+                        return;
+                    }
+                    // Sort by name (case-insensitive) for stable display
+                    users.slice().sort((a, b) => (a.Name || '').toLowerCase().localeCompare((b.Name || '').toLowerCase())).forEach(user => {
+                        var idLower = String(user.Id).toLowerCase();
+                        var wrapper = $('<div>').addClass('checkboxContainer');
+                        var label = $('<label>').addClass('emby-checkbox-label');
+                        var input = $('<input>')
+                            .attr('type', 'checkbox')
+                            .attr('is', 'emby-checkbox')
+                            .attr('data-user-id', user.Id)
+                            .addClass('userSelectionCheckbox');
+                        if (enabled.has(idLower)) {
+                            input.prop('checked', true);
+                        }
+                        label.append(input).append($('<span>').text(user.Name));
+                        wrapper.append(label);
+                        container.append(wrapper);
+                    });
+                };
+
+                var collectEnabledUsers = () => {
+                    var ids = [];
+                    $('#userSelectionList input.userSelectionCheckbox:checked').each(function () {
+                        ids.push($(this).attr('data-user-id'));
+                    });
+                    localIntroConfig.EnabledUsers = ids;
                 };
 
                 var loadPage = () => {
@@ -176,11 +217,17 @@
                     //Load Genres from Server.
 
                     Promise.all([
-                        ApiClient.getGenres(ApiClient.getCurrentUserId()), 
+                        ApiClient.getGenres(ApiClient.getCurrentUserId()),
                         ApiClient.getStudios(ApiClient.getCurrentUserId()),
-                        ApiClient.getPluginConfiguration(plugin.guid)
-                    ]).then(([genreItems, studioItems, config]) => {
+                        ApiClient.getPluginConfiguration(plugin.guid),
+                        ApiClient.getUsers()
+                    ]).then(([genreItems, studioItems, config, users]) => {
                         localIntroConfig = config;
+                        if (!localIntroConfig.EnabledUsers) {
+                            localIntroConfig.EnabledUsers = [];
+                        }
+
+                        renderUserSelection(users);
 
                         document.querySelector('#introsForMoviesOnly').checked = localIntroConfig.IntrosForMoviesOnly;
 
@@ -281,8 +328,10 @@
                     }
                 };
 
-                var saveChanges = () => 
-                    ApiClient.updatePluginConfiguration(plugin.guid, localIntroConfig);
+                var saveChanges = () => {
+                    collectEnabledUsers();
+                    return ApiClient.updatePluginConfiguration(plugin.guid, localIntroConfig);
+                };
 
                 var updateUi = () => {
 
