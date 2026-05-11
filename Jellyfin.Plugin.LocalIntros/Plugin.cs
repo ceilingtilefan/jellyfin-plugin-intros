@@ -13,7 +13,7 @@ namespace Jellyfin.Plugin.LocalIntros
     {
         public override string Name => "Local Intros";
 
-        public override Guid Id => Guid.Parse("07d86795-01f2-4d22-b174-cdc6056c3e7c");
+        public override Guid Id => Guid.Parse("07d86795-01f2-4d22-b174-cdc6056c3e7d");
 
         public const int DefaultResolution = 1080;
 
